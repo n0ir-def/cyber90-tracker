@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>90 Days of Cybersecurity — 学習トラッカー</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f4f5;color:#1a1a1a;min-height:100vh}
+.wrap{max-width:940px;margin:0 auto;padding:2rem 1.25rem}
+h1{font-size:1.45rem;font-weight:700}
+.sub{font-size:.825rem;color:#777;margin-bottom:.25rem}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:.6rem}
+.stat{background:#fff;border-radius:10px;padding:.75rem 1rem;border:1px solid #e4e4e7}
+.stat-label{font-size:.68rem;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.2rem}
+.stat-val{font-size:1.35rem;font-weight:700}
+.pomo{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:.75rem 1rem;margin-bottom:.75rem}
+.bar-wrap{background:#e4e4e7;border-radius:4px;height:6px;overflow:hidden;margin-bottom:1.25rem}
+.bar{height:100%;border-radius:4px;background:#3b82f6;transition:width .4s}
+.bar.done{background:#22c55e}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(138px,1fr));gap:.55rem;margin-bottom:.75rem}
+.card{background:#fff;border:1.5px solid #e4e4e7;border-radius:12px;padding:.8rem;cursor:pointer;text-align:left;transition:border-color .15s,box-shadow .15s;width:100%}
+.card:hover{border-color:#aaa;box-shadow:0 1px 5px rgba(0,0,0,.07)}
+.card.sel{border-color:#3b82f6;border-width:2px;background:#eff6ff}
+.ct{display:flex;justify-content:space-between;align-items:center;margin-bottom:.45rem}
+.ci{font-size:1.15rem}
+.badge{font-size:.67rem;padding:2px 5px;border-radius:4px;background:#f0f0f0;color:#666}
+.badge.ok{background:#dcfce7;color:#15803d}
+.cn{font-size:.76rem;font-weight:600;line-height:1.3;margin-bottom:.1rem}
+.cr{font-size:.67rem;color:#aaa;margin-bottom:.5rem}
+.mb{background:#e4e4e7;border-radius:3px;height:3px;overflow:hidden}
+.mf{height:100%;border-radius:3px;background:#3b82f6}
+.mf.ok{background:#22c55e}
+.panel{background:#fff;border:1px solid #e4e4e7;border-radius:14px;padding:1.2rem;margin-bottom:.75rem}
+.ph{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.8rem}
+.pt{font-size:1rem;font-weight:700;margin-bottom:.15rem}
+.pd{font-size:.78rem;color:#777}
+.xbtn{background:none;border:none;cursor:pointer;color:#bbb;font-size:1.25rem;padding:.2rem;line-height:1}
+.xbtn:hover{color:#555}
+.warn{margin-top:.45rem;padding:.45rem .65rem;background:#fefce8;border:1px solid #fde68a;border-radius:7px;font-size:.7rem;color:#92400e}
+.bulk{display:flex;gap:.4rem;margin-bottom:.65rem;flex-wrap:wrap}
+.bb{font-size:.7rem;padding:.28rem .65rem;border-radius:6px;border:1px solid #e4e4e7;background:#f9f9f9;cursor:pointer;color:#555}
+.bb:hover{background:#f0f0f0}
+.ress{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.65rem}
+.rl{font-size:.7rem;padding:.28rem .65rem;border-radius:6px;background:#eff6ff;color:#1d6aad;text-decoration:none;border:1px solid #bfdbfe;display:inline-flex;align-items:center;gap:.3rem}
+.rl:hover{background:#dbeafe}
+.days{display:flex;flex-direction:column;gap:.18rem;margin-bottom:.65rem}
+.dr{display:flex;align-items:center;gap:.55rem;padding:.45rem .55rem;border-radius:7px;background:#f9f9f9;cursor:pointer;transition:background .1s}
+.dr:hover{background:#f0f0f0}
+.dr.ck{background:#f0fdf4}
+.dr input[type=checkbox]{width:14px;height:14px;cursor:pointer;flex-shrink:0;accent-color:#22c55e}
+.dn{font-size:.67rem;color:#ccc;font-family:monospace;min-width:38px;flex-shrink:0}
+.dt{font-size:.76rem;flex:1;line-height:1.4}
+.dr.ck .dt{color:#16a34a;text-decoration:line-through;opacity:.7}
+.lsec{border:1px solid #e4e4e7;border-radius:10px;margin-bottom:.5rem;overflow:hidden}
+.lsh{display:flex;justify-content:space-between;align-items:center;padding:.6rem .875rem;cursor:pointer;background:#fafafa;user-select:none}
+.lsh:hover{background:#f4f4f5}
+.lst{font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:.35rem}
+.chev{font-size:.7rem;color:#aaa;transition:transform .2s}
+.chev.open{transform:rotate(180deg)}
+.lsb{padding:.8rem .875rem;border-top:1px solid #f0f0f0}
+.qbtn{font-size:.76rem;padding:.38rem .85rem;border-radius:7px;border:1px solid #e4e4e7;background:#f9f9f9;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;color:#444}
+.qbtn:hover{background:#f0f0f0}
+.qbtn:disabled{opacity:.55;cursor:wait}
+.qcard{background:#f9f9f9;border-radius:8px;padding:.65rem .75rem;margin-bottom:.4rem;border:1px solid #f0f0f0}
+.qq{font-size:.8rem;font-weight:600;color:#111;margin-bottom:.45rem;line-height:1.55}
+.rbtn{font-size:.7rem;padding:.22rem .55rem;border-radius:6px;border:1px solid #e0e0e0;background:#fff;cursor:pointer;color:#666}
+.rbtn:hover{background:#f5f5f5}
+.qa{margin-top:.45rem;padding:.45rem .6rem;background:#f0fdf4;border-radius:6px;font-size:.76rem;color:#166534;line-height:1.65;border:1px solid #dcfce7}
+.qal{font-size:.66rem;font-weight:700;color:#15803d;margin-bottom:.2rem}
+.fhint{font-size:.73rem;color:#888;margin-bottom:.55rem;line-height:1.55}
+textarea.fi{width:100%;border:1px solid #e4e4e7;border-radius:8px;padding:.55rem .7rem;font-size:.78rem;font-family:inherit;resize:vertical;min-height:96px;line-height:1.6;color:#1a1a1a;background:#fff}
+textarea.fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 2px rgba(59,130,246,.1)}
+.evbtn{font-size:.76rem;padding:.38rem .85rem;border-radius:7px;border:1px solid #e4e4e7;background:#f9f9f9;cursor:pointer;display:inline-flex;align-items:center;gap:.35rem;color:#444;margin-top:.45rem}
+.evbtn:hover{background:#f0f0f0}
+.evbtn:disabled{opacity:.55;cursor:wait}
+.ffb{margin-top:.65rem;padding:.7rem .8rem;background:#f9f9f9;border-radius:8px;border:1px solid #eee;font-size:.76rem;line-height:1.8;color:#333;white-space:pre-wrap}
+.fbl{font-size:.66rem;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.3rem}
+.footer{text-align:center;font-size:.7rem;color:#ccc;margin-top:2rem;padding-top:1rem;border-top:1px solid #eee}
+.apibox{background:#fff;border:1px solid #e4e4e7;border-radius:10px;padding:.75rem 1rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
+.apibox label{font-size:.7rem;color:#888;white-space:nowrap}
+.apibox input{flex:1;min-width:180px;border:1px solid #e4e4e7;border-radius:7px;padding:.32rem .6rem;font-size:.76rem;font-family:monospace;color:#333;background:#f9f9f9}
+.apibox input:focus{outline:none;border-color:#3b82f6}
+.apibtn{font-size:.7rem;padding:.3rem .75rem;border-radius:7px;border:1px solid #e4e4e7;background:#f9f9f9;cursor:pointer;color:#555;white-space:nowrap}
+.apibtn:hover{background:#f0f0f0}
+.apibtn.saved{border-color:#bbf7d0;background:#f0fdf4;color:#15803d}
+.apikey-warn{font-size:.72rem;color:#b45309;background:#fefce8;border:1px solid #fde68a;border-radius:7px;padding:.35rem .65rem;margin-bottom:.5rem}
+@media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr)}.stat-val{font-size:1.1rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div style="display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;margin-bottom:.2rem">
+    <h1>90 Days of Cybersecurity</h1>
+    <span id="pct-badge" style="font-size:.7rem;padding:2px 9px;border-radius:999px;background:#dcfce7;color:#15803d;font-weight:600">0% 完了</span>
+  </div>
+  <p class="sub">進捗トラッカー ＋ 🍅 ポモドーロ ＋ 📝 アクティブリコール ＋ 🗣️ ファインマン・テクニック</p>
+  <div class="stats" style="margin-top:.75rem">
+    <div class="stat"><div class="stat-label">完了日数</div><div class="stat-val" id="s-done">0日</div></div>
+    <div class="stat"><div class="stat-label">残り日数</div><div class="stat-val" id="s-left">95日</div></div>
+    <div class="stat"><div class="stat-label">進捗率</div><div class="stat-val" id="s-pct">0%</div></div>
+  </div>
+  <div class="apibox">
+    <label>🔑 Anthropic APIキー</label>
+    <input type="password" id="api-input" placeholder="sk-ant-..." autocomplete="off">
+    <button class="apibtn" id="api-save-btn" onclick="saveApiKey()">保存</button>
+    <button class="apibtn" onclick="clearApiKey()">削除</button>
+    <span id="api-status" style="font-size:.68rem;color:#aaa"></span>
+  </div>
+  <div class="pomo" id="pomo"></div>
+  <div class="bar-wrap"><div class="bar" id="main-bar" style="width:0%"></div></div>
+  <div class="grid" id="grid"></div>
+  <div id="detail"></div>
+  <div class="footer">進捗・クイズ・ファインマンメモはブラウザのlocalStorageに自動保存されます</div>
+</div>
+<script>
+const TOPICS=[
+  {id:"network",name:"Network+",icon:"🌐",s:1,e:7,desc:"ネットワーク基礎・CompTIA N+対策",
+   res:[{l:"Professor Messer N10-009",u:"https://youtube.com/playlist?list=PLG49S3nxzAnl_tQe3kvnmeMid0mjF8Le8"}],
+   days:[[1,"OSIモデルとネットワークトポロジー"],[2,"IPアドレスとサブネット計算"],[3,"ルーティング・スイッチングの基礎"],[4,"主要プロトコル（DNS・DHCP・HTTP）"],[5,"ワイヤレスネットワーク"],[6,"ネットワークセキュリティ入門"],[7,"復習・練習問題"]]},
+  {id:"security",name:"Security+",icon:"🔒",s:8,e:14,desc:"セキュリティ原則・CompTIA S+対策",
+   res:[{l:"Professor Messer SY0-701",u:"https://youtube.com/watch?v=KiEptGbnEBc&list=PLG49S3nxzAnl4QDVqK-hOnoqcSKEIDDuv"},{l:"Pete Zerger SY0-701",u:"https://youtube.com/watch?v=1E7pI7PB4KI&list=PL7XJSuT7Dq_UDJgYoQGIW9viwM5hc4C7n"}],
+   days:[[8,"脅威・攻撃・脆弱性の分類"],[9,"認証・アクセス管理"],[10,"暗号化の基礎（対称・非対称）"],[11,"ネットワークセキュリティの実装"],[12,"クラウド・アプリケーションセキュリティ"],[13,"インシデント対応と手順"],[14,"復習・練習問題"]]},
+  {id:"linux",name:"Linux",icon:"🐧",s:15,e:28,desc:"Linuxの基礎とシェルスクリプト",
+   res:[{l:"Linux Journey",u:"https://linuxjourney.com/"},{l:"Cisco NetAcad Linux Unhatched",u:"https://www.netacad.com/courses/linux-unhatched"},{l:"LabEx Linux Labs",u:"https://labex.io/free-labs/linux"}],
+   days:[[15,"Linuxの概要・インストール"],[16,"基本コマンド（ls, cd, mkdir, rm）"],[17,"ファイルシステムの構造と操作"],[18,"ユーザー管理とパーミッション"],[19,"テキスト処理（grep, awk, sed）"],[20,"プロセス管理（ps, kill, top）"],[21,"ネットワーク設定とツール"],[22,"パッケージ管理（apt/yum）"],[23,"Bashスクリプト入門"],[24,"Bashスクリプト応用（関数・条件分岐）"],[25,"システムログと監視"],[26,"セキュリティ設定（UFW・SSH強化）"],[27,"サービス管理（systemd）"],[28,"総復習・ハンズオン"]]},
+  {id:"python",name:"Python",icon:"🐍",s:29,e:42,desc:"セキュリティのためのPythonプログラミング",
+   res:[{l:"Codecademy Python",u:"https://codecademy.com/learn/learn-python"},{l:"Real Python",u:"https://realpython.com/"},{l:"HackerRank Python",u:"https://www.hackerrank.com/domains/python"},{l:"TheCyberMentor Python",u:"https://youtube.com/watch?v=egg-GoT5iVk"}],
+   days:[[29,"Python入門・開発環境構築"],[30,"変数・データ型・演算子"],[31,"条件分岐・ループ"],[32,"関数の定義と活用"],[33,"リスト・辞書・タプル"],[34,"ファイルの読み書き"],[35,"エラーハンドリング（try/except）"],[36,"標準ライブラリと外部モジュール"],[37,"正規表現（re）"],[38,"ネットワークプログラミング（socket）"],[39,"Webスクレイピング入門"],[40,"セキュリティツール作成①（ポートスキャナ等）"],[41,"セキュリティツール作成②（応用）"],[42,"コード整理・GitHub公開準備"]]},
+  {id:"traffic",name:"Traffic Analysis",icon:"📡",s:43,e:56,desc:"パケット解析・ネットワーク監視",
+   res:[{l:"Wireshark公式チュートリアル",u:"https://www.wireshark.org/#educationalContent"},{l:"Wireshark Tutorial（guru99）",u:"https://guru99.com/wireshark-tutorial.html"},{l:"TCPdump Tutorial",u:"https://danielmiessler.com/study/tcpdump/"}],
+   days:[[43,"Wiresharkインストール・基本操作"],[44,"パケットキャプチャの基礎"],[45,"TCP/UDPプロトコル分析"],[46,"HTTP/HTTPSのトラフィック分析"],[47,"DNSトラフィック分析"],[48,"Wiresharkフィルタ活用"],[49,"異常トラフィックの検出"],[50,"TCPdumpの基礎"],[51,"TCPdump応用・フィルタリング"],[52,"Suricata IDS入門"],[53,"Suricataルール作成"],[54,"ネットワーク侵入検知の実践"],[55,"実践トラフィック解析（CTFケーススタディ）"],[56,"総復習・キャプチャ演習"]]},
+  {id:"git",name:"Git",icon:"🌿",s:57,e:63,desc:"バージョン管理とコラボレーション",
+   res:[{l:"Codecademy Learn Git",u:"https://codecademy.com/learn/learn-git"},{l:"Git Immersion",u:"http://gitimmersion.com"},{l:"Learn Git Branching",u:"https://learngitbranching.js.org/"}],
+   days:[[57,"Gitの基礎概念とインストール"],[58,"init・add・commitの基本操作"],[59,"ブランチの作成と操作"],[60,"GitHubとリモートリポジトリ"],[61,"マージとコンフリクト解決"],[62,"rebase・cherry-pick・stash"],[63,"セキュリティプロジェクトで実践"]]},
+  {id:"elk",name:"ELK Stack",icon:"📊",s:64,e:70,desc:"ログ分析・SIEM構築",
+   res:[{l:"Complete ELK Stack Guide",u:"https://logz.io/learn/complete-guide-elk-stack/"},{l:"Elastic Stack Features",u:"https://www.elastic.co/elastic-stack/features"}],
+   days:[[64,"ELKスタックの概要とアーキテクチャ"],[65,"Elasticsearchセットアップと基本操作"],[66,"Logstashパイプライン設定"],[67,"Kibanaダッシュボード作成"],[68,"ログの取り込みと検索クエリ"],[69,"セキュリティ監視とアラート"],[70,"実践SIEM構築"]]},
+  {id:"cloud",name:"Cloud Security",icon:"☁️",s:71,e:77,desc:"AWS・Azure・GCPのセキュリティ",
+   res:[{l:"AWS Getting Started",u:"https://aws.amazon.com/getting-started/"},{l:"Azure Fundamentals",u:"https://learn.microsoft.com/en-us/training/azure/"},{l:"Google Cloud Getting Started",u:"https://cloud.google.com/getting-started/"}],
+   days:[[71,"クラウドの基礎概念とIAM"],[72,"ストレージとデータセキュリティ"],[73,"ネットワークセキュリティ（VPC・NSG）"],[74,"コンピューティングとサーバーレス"],[75,"クラウド監視とロギング"],[76,"コンプライアンスとガバナンス"],[77,"実践ハンズオン（選択プラットフォーム）"]]},
+  {id:"review",name:"総復習週間",icon:"📖",s:78,e:84,desc:"プランの空白期間 → 弱点補強・実践演習推奨",warn:true,
+   res:[{l:"PicoCTF（CTF入門）",u:"https://picoctf.org/"},{l:"TryHackMe（ガイド付き演習）",u:"https://tryhackme.com/"}],
+   days:[[78,"Network+ / Security+ 弱点補強"],[79,"Linuxスクリプト練習"],[80,"Pythonプロジェクト完成"],[81,"Wireshark実践演習"],[82,"ELKダッシュボード強化"],[83,"CTF入門（PicoCTF等）"],[84,"模擬試験・総まとめ"]]},
+  {id:"hacking",name:"Ethical Hacking",icon:"🎯",s:85,e:90,desc:"侵入テスト・倫理的ハッキング",
+   res:[{l:"Hack The Box",u:"https://hackthebox.com"},{l:"VulnHub",u:"https://vulnhub.com"},{l:"TheCyberMentor Ethical Hacking",u:"https://youtube.com/watch?v=3FNYvj2U0HM"}],
+   days:[[85,"侵入テストの方法論と法的側面"],[86,"偵察・情報収集（OSINT）"],[87,"脆弱性スキャン（Nmap・Nessus）"],[88,"エクスプロイト・攻撃手法"],[89,"後処理とレポート作成"],[90,"Hack The Box / CTF実践"]]},
+  {id:"career",name:"Career Launch",icon:"💼",s:91,e:95,desc:"履歴書・求職活動",
+   res:[{l:"BowTiedCyber Resume Template",u:"https://bowtiedcyber.substack.com/p/killer-cyber-resume-part-ii"},{l:"Indeed",u:"https://indeed.com"},{l:"LinkedIn",u:"https://linkedin.com"}],
+   days:[[91,"履歴書テンプレート選択と構成"],[92,"履歴書の完成・第三者レビュー"],[93,"求人サイトの効果的な活用法"],[94,"LinkedInプロフィール最適化"],[95,"応募開始・面接準備"]]}
+];
+const TOTAL=95,SK="cyber90_v4";
+let completed=new Set(JSON.parse(localStorage.getItem(SK+"_done")||"[]"));
+let quizData=JSON.parse(localStorage.getItem(SK+"_quiz")||"{}");
+let feynFeedback=JSON.parse(localStorage.getItem(SK+"_fb")||"{}");
+let feynText=JSON.parse(localStorage.getItem(SK+"_ft")||"{}");
+const _rv=JSON.parse(localStorage.getItem(SK+"_rv")||"{}");
+let quizRevealed={};for(const[k,v]of Object.entries(_rv))quizRevealed[k]=new Set(v);
+let selId=null,quizLoad=null,feynLoad=null,secOpen={};
+
+// ===== API Key =====
+const AK="cyber90_apikey";
+function getApiKey(){return localStorage.getItem(AK)||"";}
+function saveApiKey(){
+  const v=document.getElementById("api-input").value.trim();
+  if(!v){alert("APIキーを入力してください。");return;}
+  localStorage.setItem(AK,v);
+  updateApiUI(true);
+}
+function clearApiKey(){
+  localStorage.removeItem(AK);
+  document.getElementById("api-input").value="";
+  updateApiUI(false);
+}
+function updateApiUI(saved){
+  const st=document.getElementById("api-status");
+  const btn=document.getElementById("api-save-btn");
+  const inp=document.getElementById("api-input");
+  if(saved){
+    st.textContent="✓ 保存済み";st.style.color="#15803d";
+    btn.className="apibtn saved";
+    inp.value="";inp.placeholder="（保存済み — 変更する場合は新しいキーを入力）";
+  }else{
+    st.textContent="未設定";st.style.color="#aaa";
+    btn.className="apibtn";
+    inp.placeholder="sk-ant-...";
+  }
+}
+// 初期化時にUI反映
+(function(){if(getApiKey())updateApiUI(true);})();
+
+
+const PW=25*60,PB=5*60;
+let pm={mode:"work",rem:PW,run:false,sess:0,iv:null};
+function pmTick(){pm.rem--;if(pm.rem<=0){if(pm.mode==="work"){pm.sess++;pm.mode="break";pm.rem=PB;beep(600);}else{pm.mode="work";pm.rem=PW;beep(900);}}renderPm();}
+function pmToggle(){if(pm.run){clearInterval(pm.iv);pm.run=false;}else{pm.run=true;pm.iv=setInterval(pmTick,1000);}renderPm();}
+function pmReset(){clearInterval(pm.iv);pm={...pm,mode:"work",rem:PW,run:false};renderPm();}
+function beep(f){try{const c=new(window.AudioContext||window.webkitAudioContext)(),o=c.createOscillator(),g=c.createGain();o.connect(g);g.connect(c.destination);o.frequency.value=f;g.gain.value=.22;o.start();g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.55);o.stop(c.currentTime+.55);}catch(e){}}
+function fmt(s){return`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`}
+function renderPm(){
+  const el=document.getElementById("pomo");if(!el)return;
+  const iw=pm.mode==="work",col=iw?"#dc2626":"#16a34a",pct=Math.round((1-pm.rem/(iw?PW:PB))*100);
+  el.innerHTML=`<div style="display:flex;align-items:center;gap:.75rem;flex-wrap:wrap">
+    <div><div style="font-size:.65rem;color:#999;text-transform:uppercase;letter-spacing:.04em;margin-bottom:.1rem">${iw?"🍅 ポモドーロ — 学習中":"☕ 休憩中"}</div>
+    <div style="font-size:1.85rem;font-weight:700;font-family:monospace;color:${col};line-height:1">${fmt(pm.rem)}</div></div>
+    <div style="flex:1;min-width:110px"><div style="background:#e4e4e7;border-radius:3px;height:5px;margin-bottom:.35rem;overflow:hidden">
+    <div style="height:100%;width:${pct}%;background:${col};border-radius:3px;transition:width .9s linear"></div></div>
+    <div style="font-size:.68rem;color:#aaa">完了セッション: <strong style="color:#555">${pm.sess}</strong>（25分×1セッション）</div></div>
+    <div style="display:flex;gap:.35rem">
+    <button onclick="pmToggle()" style="font-size:.75rem;padding:.32rem .8rem;border-radius:7px;border:1px solid ${pm.run?"#fecaca":"#bbf7d0"};background:${pm.run?"#fef2f2":"#f0fdf4"};cursor:pointer;color:${col};font-weight:500">${pm.run?"⏸ 一時停止":"▶ 開始"}</button>
+    <button onclick="pmReset()" style="font-size:.75rem;padding:.32rem .6rem;border-radius:7px;border:1px solid #e4e4e7;background:#f9f9f9;cursor:pointer;color:#999" title="リセット">↺</button>
+    </div></div>`;
+}
+
+// ===== Core =====
+function save(){
+  localStorage.setItem(SK+"_done",JSON.stringify([...completed]));
+  localStorage.setItem(SK+"_quiz",JSON.stringify(quizData));
+  localStorage.setItem(SK+"_fb",JSON.stringify(feynFeedback));
+  localStorage.setItem(SK+"_ft",JSON.stringify(feynText));
+  const rv={};for(const[k,v]of Object.entries(quizRevealed))rv[k]=[...v];
+  localStorage.setItem(SK+"_rv",JSON.stringify(rv));
+}
+function prog(t){let d=0;for(let i=t.s;i<=t.e;i++)if(completed.has(i))d++;const tot=t.e-t.s+1;return{d,tot,p:Math.round(d/tot*100)};}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function updateStats(){
+  const tot=completed.size,pct=Math.round(tot/TOTAL*100);
+  document.getElementById("s-done").textContent=tot+"日";
+  document.getElementById("s-left").textContent=(TOTAL-tot)+"日";
+  document.getElementById("s-pct").textContent=pct+"%";
+  document.getElementById("pct-badge").textContent=pct+"% 完了";
+  const b=document.getElementById("main-bar");b.style.width=pct+"%";b.className="bar"+(pct===100?" done":"");
+}
+function renderGrid(){
+  document.getElementById("grid").innerHTML=TOPICS.map(t=>{
+    const{d,tot,p}=prog(t),fin=d===tot,sel=selId===t.id;
+    return`<button class="card${sel?" sel":""}" onclick="selectT('${t.id}')">
+      <div class="ct"><span class="ci">${t.icon}</span><span class="badge${fin?" ok":""}">${d}/${tot}</span></div>
+      <div class="cn">${t.name}</div><div class="cr">Day ${t.s}–${t.e}</div>
+      <div class="mb"><div class="mf${fin?" ok":""}" style="width:${p}%"></div></div>
+    </button>`;
+  }).join("");
+}
+function renderDetail(){
+  const el=document.getElementById("detail");
+  if(!selId){el.innerHTML="";return;}
+  const t=TOPICS.find(x=>x.id===selId);if(!t)return;
+  const{d,tot}=prog(t),sec=secOpen[t.id]||{};
+  const warnH=t.warn?`<div class="warn">⚠️ 元のプランでは Day 78–84 の内容が記載されていません。復習・強化期間として活用しましょう。</div>`:"";
+  const bulkH=`<div class="bulk">${d<tot?`<button class="bb" onclick="markAll('${t.id}',true)">✓ 全日完了</button>`:""}${d>0?`<button class="bb" onclick="markAll('${t.id}',false)">リセット</button>`:""}</div>`;
+  const resH=t.res.length?`<div class="ress">${t.res.map(r=>`<a class="rl" href="${r.u}" target="_blank">🔗 ${esc(r.l)}</a>`).join("")}</div>`:"";
+  const daysH=`<div class="days">${t.days.map(([day,title])=>{const ck=completed.has(day);return`<label class="dr${ck?" ck":""}"><input type="checkbox" ${ck?"checked":""} onchange="toggleDay(${day})"><span class="dn">Day ${day}</span><span class="dt">${esc(title)}</span>${ck?'<span style="color:#22c55e;font-size:.75rem;flex-shrink:0">✓</span>':""}</label>`;}).join("")}</div>`;
+
+  // Quiz section
+  const qo=sec.quiz;let qbody="";
+  if(qo){
+    if(quizData[t.id]){
+      const rev=quizRevealed[t.id]||new Set();
+      const items=quizData[t.id].map((q,i)=>`<div class="qcard"><div class="qq">Q${i+1}. ${esc(q.q)}</div>${rev.has(i)?`<div class="qa"><div class="qal">▼ 解答・解説</div>${esc(q.a)}</div>`:`<button class="rbtn" onclick="revealQ('${t.id}',${i})">答えを確認する ▼</button>`}</div>`).join("");
+      qbody=`<div class="lsb"><div style="font-size:.7rem;color:#999;margin-bottom:.55rem">💡 まず自分で考えてから答えを確認しましょう（アクティブリコール）</div>${items}<button class="qbtn" style="margin-top:.35rem" onclick="genQuiz('${t.id}')">↺ 問題を再生成</button></div>`;
+    }else if(quizLoad===t.id){
+      qbody=`<div class="lsb"><span style="font-size:.78rem;color:#aaa">問題を生成しています...</span></div>`;
+    }else{
+      qbody=`<div class="lsb"><div style="font-size:.76rem;color:#777;margin-bottom:.55rem">「${esc(t.name)}」の理解度確認問題を3問生成します。動画を一通り見た後に使いましょう。</div><button class="qbtn" onclick="genQuiz('${t.id}')">✨ 問題を生成する</button></div>`;
+    }
+  }
+  const quizSec=`<div class="lsec"><div class="lsh" onclick="toggleSec('${t.id}','quiz')"><span class="lst">📝 アクティブリコール — 問題で確認する</span><span class="chev${qo?" open":""}">▼</span></div>${qo?qbody:""}</div>`;
+
+  // Feynman section
+  const fo=sec.feynman;let fbody="";
+  if(fo){
+    const fb=feynFeedback[t.id],sv=feynText[t.id]||"";
+    fbody=`<div class="lsb"><div class="fhint">今日学んだことを、何も見ずに自分の言葉で書いてみましょう。<br>うまく説明できない部分が「まだ理解しきれていない箇所」です。</div><textarea class="fi" id="fi-${t.id}" oninput="feynText['${t.id}']=this.value;save()" placeholder="${esc(t.name)}について学んだことを自由に書いてください...">${esc(sv)}</textarea><br><button class="evbtn" id="evbtn-${t.id}" onclick="evalFeyn('${t.id}')" ${feynLoad===t.id?"disabled":""}>${feynLoad===t.id?"評価中...":"✨ Claudeに評価してもらう"}</button>${fb?`<div class="ffb"><div class="fbl">フィードバック</div>${esc(fb)}</div>`:""}</div>`;
+  }
+  const feynSec=`<div class="lsec"><div class="lsh" onclick="toggleSec('${t.id}','feynman')"><span class="lst">🗣️ ファインマン・テクニック — 自分の言葉で説明する</span><span class="chev${fo?" open":""}">▼</span></div>${fo?fbody:""}</div>`;
+
+  el.innerHTML=`<div class="panel"><div class="ph"><div><div class="pt">${t.icon} ${t.name}</div><div class="pd">${esc(t.desc)}</div>${warnH}</div><button class="xbtn" onclick="selectT(null)">✕</button></div>${bulkH}${resH}${daysH}${quizSec}${feynSec}</div>`;
+}
+
+// ===== Actions =====
+function toggleDay(day){completed.has(day)?completed.delete(day):completed.add(day);save();render();}
+function markAll(id,v){const t=TOPICS.find(x=>x.id===id);if(!t)return;for(let d=t.s;d<=t.e;d++)v?completed.add(d):completed.delete(d);save();render();}
+function selectT(id){selId=selId===id?null:id;render();}
+function toggleSec(id,k){if(!secOpen[id])secOpen[id]={};secOpen[id][k]=!secOpen[id][k];renderDetail();}
+function revealQ(id,i){if(!quizRevealed[id])quizRevealed[id]=new Set();quizRevealed[id].add(i);save();renderDetail();}
+
+async function genQuiz(id){
+  if(quizLoad)return;
+  const apiKey=getApiKey();
+  if(!apiKey){alert("APIキーを設定してください。");return;}
+  const t=TOPICS.find(x=>x.id===id);if(!t)return;
+  delete quizData[id];delete quizRevealed[id];quizLoad=id;renderDetail();
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:900,messages:[{role:"user",content:`サイバーセキュリティ「${t.name}（${t.desc}）」の理解度確認問題を3問、短答式で作成してください。\nJSON配列のみ返してください（コードブロック不要）：\n[{"q":"問題文","a":"解答と解説"},{"q":"...","a":"..."},{"q":"...","a":"..."}]\n問題は日本語で、実務・試験で問われる重要概念を中心に。`}]})});
+    const data=await r.json();
+    const text=data.content?.map(b=>b.text||"").join("")||"[]";
+    quizData[id]=JSON.parse(text.replace(/```json|```/g,"").trim());
+  }catch(e){quizData[id]=[{q:"問題の生成に失敗しました。再度お試しください。",a:""}];}
+  quizLoad=null;save();renderDetail();
+}
+
+async function evalFeyn(id){
+  if(feynLoad)return;
+  const apiKey=getApiKey();
+  if(!apiKey){alert("APIキーを設定してください。");return;}
+  const t=TOPICS.find(x=>x.id===id);if(!t)return;
+  const txt=feynText[id]||"";
+  if(!txt.trim()){alert("説明を入力してください。");return;}
+  feynLoad=id;renderDetail();
+  try{
+    const r=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json","x-api-key":apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:700,messages:[{role:"user",content:`サイバーセキュリティ学習者が「${t.name}（${t.desc}）」について以下のように説明しました：\n\n---\n${txt}\n---\n\n以下の形式で日本語フィードバックをください（合計250文字程度）：\n✅ 正確に理解できている点\n⚠️ もう少し補足できる点\n❌ 誤解・不足している重要ポイント（あれば）\n\n励ましを込めた口調でお願いします。`}]})});
+    const data=await r.json();
+    feynFeedback[id]=data.content?.map(b=>b.text||"").join("")||"評価できませんでした";
+  }catch(e){feynFeedback[id]="エラーが発生しました。再度お試しください。";}
+  feynLoad=null;save();renderDetail();
+}
+
+function render(){updateStats();renderGrid();renderDetail();}
+renderPm();render();
+</script>
+</body>
+</html>
